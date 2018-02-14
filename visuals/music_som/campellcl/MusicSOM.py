@@ -6,12 +6,13 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import sys
 
 
 __author__ = 'Chris Campell'
 __version__ = '2/11/2018'
 
-with open('../../../data/chords.csv', 'r') as fp:
+with open(sys.argv[1], 'r') as fp:
     chords = pd.read_csv(fp)
 df_chords = pd.DataFrame(chords)
 
@@ -108,7 +109,7 @@ for s in range(0, lambda_iter):
         # Keep track of the best matching unit indices
         best_matching_units[label_t] = (t_i, t_j)
         # print("The BMU for randomly selected chord %s is at index (%d,%d)." % (label_t, t_i, t_j))
-    print('Ended iteration %d.' % s)
+    # print('Ended iteration %d.' % s)
 
 ax, fig = plt.subplots()
 plt.xlim(0, 20)
@@ -129,9 +130,7 @@ for i, label in enumerate(labels):
     else:
         plt.annotate(label, (x_coords[i], y_coords[i]))
         annotated.append(label)
-plt.savefig('music_som.png')
-plt.show()
-
+plt.savefig(sys.argv[2])
 
 # Colormap: Take CM and dot product it with every W_ij
 CM = df_chords[df_chords['Label'] == 'CM'].values[0]
@@ -148,7 +147,7 @@ plt.ylim(0, 19)
 plt.yticks(np.arange(0, 20, 1.0))
 # sns.heatmap(CM_activation, annot=False,  linewidths=.5, vmin=0, vmax=1)
 sns.heatmap(CM_activation, annot=False, linewidths=.5)
-plt.savefig('music_som_CM.png')
+plt.savefig(sys.argv[3])
 
 cm = df_chords[df_chords['Label'] == 'Cm'].values[0]
 cm = cm[1:]
@@ -163,5 +162,5 @@ plt.xticks(np.arange(0, 20, 1.0))
 plt.ylim(0, 19)
 plt.yticks(np.arange(0, 20, 1.0))
 sns.heatmap(CM_activation, annot=False, linewidths=.5)
-plt.savefig('music_som_Cm.png')
+plt.savefig(sys.argv[4])
 
