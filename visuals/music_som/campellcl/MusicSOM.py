@@ -22,8 +22,8 @@ p = 20
 # Define the number of attributes to be everything but the target label:
 m = len(df_chords.columns) - 1
 # Define the iteration limit (number of epochs?) to be 360:
-# lambda_iter = 360
-lambda_iter = 50
+lambda_iter = 360
+# lambda_iter = 50
 # Define the number of samples n:
 n = df_chords.shape[0]
 # Define c, the neighborhood radius decrement period
@@ -109,7 +109,7 @@ for s in range(0, lambda_iter):
                         # print(weights)
         # Keep track of the best matching unit indices
         best_matching_units[label_t] = (t_i, t_j)
-        print("The BMU for randomly selected chord %s is at index (%d,%d)." % (label_t, t_i, t_j))
+        # print("The BMU for randomly selected chord %s is at index (%d,%d)." % (label_t, t_i, t_j))
     print('Ended iteration %d.' % s)
 
 ax, fig = plt.subplots()
