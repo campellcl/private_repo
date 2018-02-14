@@ -22,7 +22,8 @@ p = 20
 # Define the number of attributes to be everything but the target label:
 m = len(df_chords.columns) - 1
 # Define the iteration limit (number of epochs?) to be 360:
-lambda_iter = 360
+# lambda_iter = 360
+lambda_iter = 50
 # Define the number of samples n:
 n = df_chords.shape[0]
 # Define c, the neighborhood radius decrement period
@@ -62,12 +63,7 @@ for i in range(p):
             weights[i, j, k] = np.random.uniform(0, 1)
 
 best_matching_units = {}
-ax, fig = plt.subplots()
-plt.xlim(0, 20)
-plt.xticks(np.arange(0, 21, 1.0))
-plt.ylim(0, 20)
-plt.yticks(np.arange(0, 21, 1.0))
-plt.grid()
+
 
 # Perform the training over lambda iterations.
 for s in range(0, lambda_iter):
@@ -102,19 +98,41 @@ for s in range(0, lambda_iter):
                         min_dist = current_dist
                         BMU = weights[i, j]
                         t_i, t_j = (i, j)
-                '''
-                Update the weight vectors of nodes in the neighborhood of the BMU.
-                '''
-                for k in range(p):
-                    for l in range(p):
-                        sigma = (1/3) * (p - 1 - (s/c))
-                        theta = np.exp(-((custom_dist(t_i, t_j, k, l)**2)/(2*(sigma**2))))
-                        weights[k, l] = weights[k, l] + (theta*alpha)*(r_t - weights[k, l])
+        '''
+        Update the weight vectors of nodes in the neighborhood of the BMU.
+        '''
+        for k in range(p):
+            for l in range(p):
+                sigma = (1/3) * (p - 1 - (s/c))
+                theta = np.exp(-((custom_dist(t_i, t_j, k, l)**2)/(2*(sigma**2))))
+                weights[k, l] = weights[k, l] + (theta*alpha)*(r_t - weights[k, l])
                         # print(weights)
         # Keep track of the best matching unit indices
         best_matching_units[label_t] = (t_i, t_j)
         print("The BMU for randomly selected chord %s is at index (%d,%d)." % (label_t, t_i, t_j))
-        plt.scatter(x=t_i, y=t_j, label=label_t)
     print('Ended iteration %d.' % s)
-    plt.show()
+
+ax, fig = plt.subplots()
+plt.xlim(0, 20)
+plt.xticks(np.arange(0, 21, 1.0))
+plt.ylim(0, 20)
+plt.yticks(np.arange(0, 21, 1.0))
+plt.grid()
+x_coords = [bmu_index[0] for (label, bmu_index) in best_matching_units.items()]
+y_coords = [bmu_index[1] for (label, bmu_index) in best_matching_units.items()]
+labels = [label for (label, bmu_index) in best_matching_units.items()]
+plt.scatter(x=x_coords, y=y_coords)
+annotated = []
+for i, label in enumerate(labels):
+    if annotated:
+        if label not in annotated:
+            plt.annotate(label, (x_coords[i], y_coords[i]))
+            annotated.append(label)
+    else:
+        plt.annotate(label, (x_coords[i], y_coords[i]))
+        annotated.append(label)
+
 plt.show()
+# for label, bmu_index in best_matching_units.items():
+#     plt.scatter(x=bmu_index[0], y=bmu_index[1], label=label)
+# plt.show()
