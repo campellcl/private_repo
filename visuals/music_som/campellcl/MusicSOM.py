@@ -76,8 +76,11 @@ for s in range(0, lambda_iter):
         # Select the values of a random input vector
         random_index = np.random.randint(0, n)
         r = df_chords.iloc[random_index][:].values
+        # This is the chord associated with the input vector:
         label_t = r[0]
+        # r_t is a vector of size 12 (randomly selected)
         r_t = r[1:]
+        # These two vars will hold the index of the BMU for the randomly selected vector.
         t_i, t_j = (-1, -1)
         min_dist = None
         BMU = None
@@ -86,7 +89,7 @@ for s in range(0, lambda_iter):
             for j in range(p):
                 '''
                 Use Euclidean distance formula to find the similarity between the input vector and map's node's weight
-                    vector. Keep track of the node that produces the smallest distance (BMU). 
+                    vector. Keep track of the node that produces the smallest distance, call it the BMU. 
                 '''
                 if i == 0 and j == 0:
                     current_dist = np.linalg.norm(weights[0, 0] - r_t)
@@ -108,8 +111,9 @@ for s in range(0, lambda_iter):
                         theta = np.exp(-((custom_dist(t_i, t_j, k, l)**2)/(2*(sigma**2))))
                         weights[k, l] = weights[k, l] + (theta*alpha)*(r_t - weights[k, l])
                         # print(weights)
+        # Keep track of the best matching unit indices
         best_matching_units[label_t] = (t_i, t_j)
-        print("The BMU for %s is (%d,%d)." %(label_t, t_i, t_j))
+        print("The BMU for randomly selected chord %s is at index (%d,%d)." % (label_t, t_i, t_j))
         plt.scatter(x=t_i, y=t_j, label=label_t)
     print('Ended iteration %d.' % s)
     plt.show()
