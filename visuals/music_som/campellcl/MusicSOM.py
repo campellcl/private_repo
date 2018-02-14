@@ -4,10 +4,8 @@ MusicSOM.py
 
 import pandas as pd
 import numpy as np
-from scipy.spatial import distance
-from sklearn.preprocessing import normalize
 import matplotlib.pyplot as plt
-from matplotlib.axes import Axes
+import seaborn as sns
 
 
 __author__ = 'Chris Campell'
@@ -131,8 +129,39 @@ for i, label in enumerate(labels):
     else:
         plt.annotate(label, (x_coords[i], y_coords[i]))
         annotated.append(label)
-
+plt.savefig('music_som.png')
 plt.show()
-# for label, bmu_index in best_matching_units.items():
-#     plt.scatter(x=bmu_index[0], y=bmu_index[1], label=label)
-# plt.show()
+
+
+# Colormap: Take CM and dot product it with every W_ij
+CM = df_chords[df_chords['Label'] == 'CM'].values[0]
+CM = CM[1:]
+CM_activation = np.zeros((20, 20))
+for i in range(p):
+    for j in range(p):
+        CM_activation[i,j] = (np.dot(weights[i, j], CM))
+plt.clf()
+ax, fig = plt.subplots()
+plt.xlim(0, 19)
+plt.xticks(np.arange(0, 20, 1.0))
+plt.ylim(0, 19)
+plt.yticks(np.arange(0, 20, 1.0))
+# sns.heatmap(CM_activation, annot=False,  linewidths=.5, vmin=0, vmax=1)
+sns.heatmap(CM_activation, annot=False, linewidths=.5)
+plt.savefig('music_som_CM.png')
+
+cm = df_chords[df_chords['Label'] == 'Cm'].values[0]
+cm = cm[1:]
+cm_activation = np.zeros((20, 20))
+for i in range(p):
+    for j in range(p):
+        cm_activation[i,j] = (np.dot(weights[i, j], cm))
+plt.clf()
+ax, fig = plt.subplots()
+plt.xlim(0, 19)
+plt.xticks(np.arange(0, 20, 1.0))
+plt.ylim(0, 19)
+plt.yticks(np.arange(0, 20, 1.0))
+sns.heatmap(CM_activation, annot=False, linewidths=.5)
+plt.savefig('music_som_Cm.png')
+
